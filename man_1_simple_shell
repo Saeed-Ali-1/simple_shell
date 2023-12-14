@@ -1,0 +1,74 @@
+.TH SHELLBY 1 "December 2023" "ALX School" "0x16. C - Simple Shell"
+.SH NAME
+.B shellby \- Simple UNIX command interpreter
+
+.SH SYNOPSIS
+.B shellby [\fIfilename\fR]
+
+.SH DESCRIPTION
+.B Shellby\fR is a simple UNIX command language interpreter that reads commands from a file or standard input and executes them.
+
+.B Invocation
+\fBShellby\fR can be invoked interactively or non-interactively. If invoked without a terminal-connected standard input, it executes received commands in order.
+
+When invoked with standard input linked to a terminal, an interactive shell opens. During interactive mode, \fBshellby\fR displays the \fI$ \fR prompt.
+
+Alternatively, providing command line arguments treats the first argument as a file to read commands from. Each line in the file contains one command. \fBShellby\fR executes these commands sequentially before exiting.
+
+.B Environment
+Upon invocation, \fBshellby\fR copies the environment of the parent process. The environment contains \fIname-value\fR strings (\fINAME=VALUE\fR) describing variables.
+
+.B Command Execution
+After receiving a command, \fBshellby\fR tokenizes it into words using \fB" "\fR as a delimiter. The first word is the command, and the rest are its arguments.
+
+.RS
+1. If the command is a shell builtin, it executes the builtin.
+2. If the command is an executable file, it searches directories listed in the \fBPATH\fR variable.
+3. If the command begins with a slash or dot or any previous search succeeds, \fBshellby\fR executes the named program with its arguments.
+
+.B Exit Status
+\fBShellby\fR returns the exit status of the last command executed. Zero denotes success, non-zero indicates failure.
+
+.B Signals
+While running interactively, \fBshellby\fR ignores \fBCtrl+c\fR but exits on \fBCtrl+d\fR (end-of-file).
+
+.B Variable Replacement
+\fBShellby\fR interprets the following \fI$\fR characters for variable replacement:
+$ENV_VARIABLE is substituted with its value.
+$? is substituted with the return value of the last program executed.
+$$ is substituted with the current process ID.
+
+.B Comments
+\fBShellby\fR ignores content after a \fI#\fR character on a line.
+
+.B Operators
+Commands separated by \fI;\fR are executed sequentially.
+\fIcommand1 && command2\fR: \fIcommand2\fR executes if \fIcommand1\fR returns zero.
+\fIcommand1 || command2\fR: \fIcommand2\fR executes if \fIcommand1\fR returns non-zero.
+
+.B Shellby Builtin Commands
+.RS
+.B cd
+Changes the current directory of the process.
+
+.B alias
+Manages aliases: lists all, prints specific, or defines new ones.
+
+.B exit
+Exits the shell with an optional status argument.
+
+.B env
+Prints the current environment.
+
+.B setenv
+Initializes or modifies environment variables.
+
+.B unsetenv
+Removes an environmental variable.
+.RE
+
+.SH SEE ALSO
+access(2), chdir(2), execve(2), _exit(2), exit(3), fflush(3), fork(2), free(3), isatty(3), getcwd(3), malloc(3), open(2), read(2), sh(1), signal(2), stat(2), wait(2), write(2)
+
+.B Shellby\fR emulates basic functionality of the \fBsh\fR shell. This man page borrows from the corresponding man pages sh(1) and dash(1).
+
